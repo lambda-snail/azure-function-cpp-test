@@ -214,15 +214,3 @@ int main(int32_t argc, char** argv, char** envp)
 
     return 0;
 }
-
-
-// https://www.youtube.com/watch?v=2hNdkYInj4g
-// https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-other?tabs=go%2Clinux
-// https://think-async.com/Asio/asio-1.30.2/doc/asio/tutorial/tutdaytime1.html
-
-//GET /api/simple-http-trigger HTTP/1.1
-//Accept: text/html,application/json
-//Connection: close
-//Host: localhost:7071
-
-
