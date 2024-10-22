@@ -31,20 +31,27 @@ public:
         {
             if (not e)
             {
+                // Write http response header
+                if(this_->m_data.empty())
+                {
+                    auto const& header = std::format(tcp_connection::m_response_header_template, length);
+                    this_->m_data.assign(header.begin(), header.end());
+                }
+
                 std::cout << std::endl << std::format(
                     "[Connection] Bytes available for reading: {}", length) << std::endl;
-                for (size_t b = 0; b < length; ++b)
-                {
-                    if (this_->m_buffer[b] != '\r')
-                    {
-                        std::clog << this_->m_buffer[b];
-                    }
-                }
+                // for (size_t b = 0; b < length; ++b)
+                // {
+                //     if (this_->m_buffer[b] != '\r')
+                //     {
+                //         std::clog << this_->m_buffer[b];
+                //     }
+                // }
 
                 auto it_end = this_->m_buffer.begin();
                 std::ranges::advance(it_end, static_cast<std::iter_difference_t<decltype(this_->m_buffer)>>(length));
 
-                this_->m_data.assign(this_->m_buffer.begin(), it_end);
+                this_->m_data.insert(this_->m_data.end(), this_->m_buffer.begin(), this_->m_buffer.end());
 
                 // Need to parse http header to find content length and continue reading rest of the data
                 // Or better yet, use library for handling http related stuff
@@ -69,6 +76,16 @@ public:
 private:
     void write_echo()
     {
+        std::clog << "[Connection] --- Response ---" << std::endl;
+        for (auto c : m_data)
+        {
+            if (c != '\r')
+            {
+                std::clog << c;
+            }
+        }
+        std::clog << "[Connection] --- End Response ---" << std::endl;
+
         asio::async_write(m_socket, asio::buffer(m_data),
           [this_ = shared_from_this()](asio::error_code ec, size_t length)
               {
@@ -83,8 +100,9 @@ private:
         if (not ec)
         {
             std::clog << "[Connection] Wrote " << bytes << " bytes" << std::endl;
-            read_request();
-        } else
+            //read_request();
+        }
+        else if (ec != asio::error::eof)
         {
             std::clog << "[Connection] Error when establishing connection: " << ec.message() << std::endl;
         }
@@ -93,7 +111,14 @@ private:
     asio::ip::tcp::socket m_socket;
 
     std::vector<char> m_data{};
-    std::array<char, 100 * 1024> m_buffer{};
+    std::array<char, 10 * 1024> m_buffer{};
+
+    static std::string_view constexpr m_response_header_template =
+        "HTTP/1.1 200\r\n"
+        //"Date: Mon, 27 Jul 2009 12:28:53 GMT"
+        "Content-Length: {}\r\n"
+        "Content-Type: text/plain\r\n"
+        "Connection: Closed\r\n\r\n";
 };
 
 class tcp_server
@@ -142,7 +167,7 @@ static constexpr std::string_view custom_handler_port_str = "FUNCTIONS_CUSTOMHAN
  * @var_string The string of the variable, including the '=' character.
  */
 template<typename value_t>
-static constexpr bool get_environment_value = [](std::string_view var_string, char** env_vars, value_t& value)
+static constexpr bool get_environment_value(std::string_view var_string, char** env_vars, value_t& value)
 {
     for(int32_t i = 0; env_vars[i] != nullptr; ++i)
     {
@@ -195,7 +220,9 @@ int main(int32_t argc, char** argv, char** envp)
 // https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-other?tabs=go%2Clinux
 // https://think-async.com/Asio/asio-1.30.2/doc/asio/tutorial/tutdaytime1.html
 
-// GET /api/simple-http-trigger HTTP/1.1
-// Accept: text/html,application/json
-// Connection: keep-alive
-// Host: localhost:7071
+//GET /api/simple-http-trigger HTTP/1.1
+//Accept: text/html,application/json
+//Connection: close
+//Host: localhost:7071
+
+
