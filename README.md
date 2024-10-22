@@ -28,7 +28,7 @@ The port we are supposed to listen to in order to communicate with the host is f
 
 ## Initial Request
 
-On start, the function host will snd the following request to the function:
+On start, the function host will send the following request to the function:
 
 ```
 GET / HTTP/1.1
