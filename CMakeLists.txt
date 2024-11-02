@@ -15,27 +15,42 @@ include(FetchContent)
 # Based on cmake file provided by havogt:
 # https://stackoverflow.com/questions/65586352/is-it-possible-to-use-fetchcontent-or-an-equivalent-to-add-a-library-that-has-no
 
-FetchContent_Declare(asio
-        GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+set(CROW_USE_BOOST 0)
+set(CROW_AMALGAMATE 0)
+set(CROW_BUILD_TESTS 0)
+
+FetchContent_Declare(crow
+        GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
         GIT_TAG master
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
 )
 
-FetchContent_GetProperties(asio)
-if(NOT asio_POPULATED)
-    FetchContent_Populate(asio)
+FetchContent_GetProperties(crow)
+if(NOT crow_POPULATED)
+    FetchContent_Populate(crow)
 endif()
 
-add_library(asio INTERFACE)
-target_include_directories(asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
-find_package(Threads)
-target_link_libraries(asio INTERFACE Threads::Threads)
+# We use Crow's cmake module to find the asio installed on the local system,
+# this is because Crow does not seem to play nicely with an asio from fetch_content
+list(APPEND CMAKE_MODULE_PATH ${crow_SOURCE_DIR}/cmake)
+find_package(asio REQUIRED)
+
+
+add_library(crow INTERFACE)
+target_include_directories(crow INTERFACE ${crow_SOURCE_DIR}/include)
+target_link_libraries(crow INTERFACE asio::asio Threads::Threads)
+
+
 
 # Own application
 
 add_executable(function-test
         src/main.cpp
         src/main.cpp)
+
+target_compile_definitions(function-test INTERFACE USE_STANDALONE_ASIO)
+#target_compile_definitions(function-test INTERFACE ASIO_NO_TS_EXECUTORS)
+
 #target_include_directories(function-test PRIVATE )
-target_link_libraries(function-test PRIVATE asio)
+target_link_libraries(function-test PRIVATE asio::asio crow)
