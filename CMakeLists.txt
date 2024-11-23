@@ -54,3 +54,21 @@ target_compile_definitions(function-test INTERFACE USE_STANDALONE_ASIO)
 
 #target_include_directories(function-test PRIVATE )
 target_link_libraries(function-test PRIVATE asio::asio crow)
+
+add_custom_command(
+        TARGET function-test POST_BUILD
+        COMMAND cp
+        ${CMAKE_SOURCE_DIR}/local.settings.json
+        ${CMAKE_CURRENT_BINARY_DIR}/local.settings.json)
+
+add_custom_command(
+        TARGET function-test POST_BUILD
+        COMMAND cp
+        ${CMAKE_SOURCE_DIR}/host.json
+        ${CMAKE_CURRENT_BINARY_DIR}/host.json)
+
+add_custom_command(
+        TARGET function-test POST_BUILD
+        COMMAND cp
+        ${CMAKE_SOURCE_DIR}/simple-http-trigger/function.json
+        ${CMAKE_CURRENT_BINARY_DIR}/simple-http-trigger/function.json)
