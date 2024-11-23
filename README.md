@@ -3,8 +3,7 @@
 This is a bare-bones example of how to make an Azure function in C++. It contains one function `simple-http-trigger`
 that simply returns the http request that was sent to it.
 
-There is no error handling and all http related stuff are hard-coded, as the goal of the
-project was to investigate what the minimum amount of work is to make it work locally. The project may be used
+The example uses crow to set up the web server for simplicity. The project may be used
 further in the future to investigate if it is possible to use other Azure services that are usually
 integrated in an Azure function.
 
@@ -28,22 +27,23 @@ The port we are supposed to listen to in order to communicate with the host is f
 
 ## Initial Request
 
-On start, the function host will send the following request to the function:
+On start, the function host will send the following request to the worker/handler:
 
 ```
 GET / HTTP/1.1
-Host: 127.0.0.1:44877
+Host: 127.0.0.1:XXX
 ```
 
-I'm not sure yet what is the appropriate way to respond to this, but it seems the host is not
-unhappy with the current state (echo the request back) since subsequent requests to the function are working.
+I'm not sure yet what is the appropriate way to respond to this, but currently the example is returning an empty OK response
+and it seems the host is accepting this.
 
 ## Forwarding Requests
 
 If we set the flag `enableForwardingHttpRequest` in host.json the function host will send a copy of incoming requests
 to our function, which can come in handy if we only need http triggers. Turning this off adds extra structure to the
-requests coming from the function host. This is not handled here as it would need more preparation than this minimal
-project, but I may look at this in the future.
+requests coming from the function host.
+
+The initial version of this test made use of the `enableForwardingHttpRequest`. Note that the route changes when using this setting.
 
 # References
 
