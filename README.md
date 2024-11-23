@@ -49,6 +49,8 @@ The initial version of this test made use of the `enableForwardingHttpRequest`. 
 
 - https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-other?tabs=go%2Clinux
   - Official documentation
+- https://learn.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings?tabs=isolated-process%2Cnode-v4%2Cpython-v2&pivots=programming-language-csharp#bindings-code-examples
+  - Examples of bindings of various types
 - https://www.youtube.com/watch?v=2hNdkYInj4g
     - Minimal video demonstrating how to do this in Go
 - https://think-async.com/Asio/asio-1.30.2/doc/asio/tutorial/tutdaytime1.html
