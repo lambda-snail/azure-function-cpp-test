@@ -85,6 +85,16 @@ int main(int32_t argc, char** argv, char** envp)
         // return response;
     });
 
+    CROW_ROUTE(app, "/queue-trigger").methods("POST"_method)([](crow::request const& req)
+    {
+        crow::json::rvalue const& json = crow::json::load(req.body);
+        crow::json::rvalue const& message = json["Data"]["testQueueTrigger"];
+
+        std::cout << message << std::endl;
+
+        return crow::response(crow::status::NO_CONTENT);
+    });
+
     app.port(port)/*.multithreaded()*/.run();
 
     return 0;

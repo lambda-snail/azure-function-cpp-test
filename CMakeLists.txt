@@ -70,6 +70,12 @@ add_custom_command(
 
 add_custom_command(
         TARGET function-test POST_BUILD
-        COMMAND cp
-        ${CMAKE_SOURCE_DIR}/simple-http-trigger/function.json
-        ${CMAKE_CURRENT_BINARY_DIR}/simple-http-trigger/function.json)
+        COMMAND cp -r
+        ${CMAKE_SOURCE_DIR}/simple-http-trigger
+        ${CMAKE_CURRENT_BINARY_DIR})
+
+add_custom_command(
+        TARGET function-test POST_BUILD
+        COMMAND cp -r
+        ${CMAKE_SOURCE_DIR}/queue-trigger
+        ${CMAKE_CURRENT_BINARY_DIR})

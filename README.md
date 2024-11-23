@@ -1,7 +1,8 @@
 # Azure Function in C++
 
-This is a bare-bones example of how to make an Azure function in C++. It contains one function `simple-http-trigger`
-that simply returns the http request that was sent to it.
+This is a bare-bones example of how to make an Azure function in C++. It contains one http trigger and one queue trigger 
+that binds to a local Azurite instance. The http trigger returns the http body and the queue trigger echoes the message
+to stdout.
 
 The example uses crow to set up the web server for simplicity. The project may be used
 further in the future to investigate if it is possible to use other Azure services that are usually
@@ -11,7 +12,7 @@ Not sure yet if it will work in the cloud as-is, or if you need to e.g. put it i
 
 # How to Run
 
-Requires Azure functions core tools to run locally.
+Requires Azure functions core tools and a running Azurite emulator to run locally. In Azurite the queue trigger test needs a queue called `test-queue` to bind to.
 
 - Compile
 - `cd <cmake-folder>`

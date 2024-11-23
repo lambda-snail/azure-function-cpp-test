@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "testQueueTrigger",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "test-queue",
+      "connection": "Azurite"
+    }
+  ]
+}
