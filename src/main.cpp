@@ -6,6 +6,8 @@
 
 #include <crow.h>
 
+#include "host_types.hpp"
+
 static constexpr std::string_view custom_handler_port_str = "FUNCTIONS_CUSTOMHANDLER_PORT=";
 
 /**
@@ -57,18 +59,30 @@ int main(int32_t argc, char** argv, char** envp)
         return crow::response(crow::status::OK);
     });
 
-    CROW_ROUTE(app, "/api/simple-http-trigger")([](crow::request const& req)
+    // If enableForwardingHttpRequest is set,§ the path will be /api/simple-http-trigger
+    CROW_ROUTE(app, "/simple-http-trigger").methods("POST"_method)([](crow::request const& req)
     {
-        crow::json::wvalue response = crow::json::wvalue::empty_object();
-        for(const auto&[header, value] : req.headers)
-        {
-            response[header] = value;
-        }
+        crow::json::rvalue const& json = crow::json::load(req.body);
+        crow::json::rvalue const& data = json["Data"];
+        crow::json::rvalue const& metadata = json["Metadata"]; // Not MetaData
 
-        crow::response http_response(crow::status::OK, response);
-        http_response.set_header("Content-Type", "application/json");
+        crow::json::rvalue const& body = data["req"]["Body"];
 
-        return response;
+        crow::json::wvalue response;
+        response["Outputs"]["res"]["body"] = body.s();
+        return crow::response(crow::status::OK, response);
+
+        // Echoes the request back to the caller when enableForwardingHttpRequest is set
+        // crow::json::wvalue response = crow::json::wvalue::empty_object();
+        // for(const auto&[header, value] : req.headers)
+        // {
+        //     response[header] = value;
+        // }
+        //
+        // crow::response http_response(crow::status::OK, response);
+        // http_response.set_header("Content-Type", "application/json");
+        //
+        // return response;
     });
 
     app.port(port)/*.multithreaded()*/.run();

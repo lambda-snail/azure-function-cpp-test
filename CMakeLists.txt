@@ -47,7 +47,8 @@ target_link_libraries(crow INTERFACE asio::asio Threads::Threads)
 
 add_executable(function-test
         src/main.cpp
-        src/main.cpp)
+        src/main.cpp
+        src/host_types.hpp)
 
 target_compile_definitions(function-test INTERFACE USE_STANDALONE_ASIO)
 #target_compile_definitions(function-test INTERFACE ASIO_NO_TS_EXECUTORS)
