@@ -1,0 +1,10 @@
+{
+  "build": {
+    "dockerfile":
+    "Dockerfile"
+  },
+  "customizations": {
+
+  },
+  "forwardPorts": [3000]
+}

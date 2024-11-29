@@ -28,7 +28,7 @@ FetchContent_Declare(crow
 
 FetchContent_GetProperties(crow)
 if(NOT crow_POPULATED)
-    FetchContent_Populate(crow)
+    FetchContent_MakeAvailable(crow)
 endif()
 
 # We use Crow's cmake module to find the asio installed on the local system,
